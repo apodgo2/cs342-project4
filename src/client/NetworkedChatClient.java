@@ -1,4 +1,4 @@
-package client;
+package Client;
 
 import java.awt.EventQueue;
 
@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JTextPane;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
+import java.io.PrintWriter;
 import java.awt.event.ActionEvent;
 
 public class NetworkedChatClient {
@@ -22,6 +23,10 @@ public class NetworkedChatClient {
 	private JTextField txtServerIP;
 	private JTextField txtServerPort;
 	private JTextField txtUserInput;
+	
+	private Protocol proto;
+	String text;
+	//PrintWriter out;
 
 	/**
 	 * Launch the application.
@@ -116,11 +121,18 @@ public class NetworkedChatClient {
 		txtUserInput.setText("Type your message here.");
 		messageEntry_splitPane.setLeftComponent(txtUserInput);
 		txtUserInput.setColumns(10);
+		txtUserInput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				text = txtUserInput.getText();
+				txtUserInput.setText("");
+			}
+		});
 		
 		JButton btnSend = new JButton("Send");
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: send message to the server
+				proto.respondString(text);
 			}
 		});
 		messageEntry_splitPane.setRightComponent(btnSend);
