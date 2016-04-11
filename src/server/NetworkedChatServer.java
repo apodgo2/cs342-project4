@@ -113,22 +113,8 @@ public class NetworkedChatServer {
 				
 				if (server.isRunning())
 	    			lblServerStatusIndicator.setText("ONLINE");
-				
-				//Status update timer
-				statusUpdate = new Timer(1000, new ActionListener() {
-				    public void actionPerformed(ActionEvent evt) {
-				    	//make sure stuff exists in the first place
-				    	if (lblServerStatusIndicator != null && server != null) {
-				    		//check server status
-				    		if (server.isRunning())
-				    			lblServerStatusIndicator.setText("ONLINE");
-				    		else
-				    			lblServerStatusIndicator.setText("OFFLINE");
-				    	} else if (lblServerStatusIndicator != null) {//label exists, server not instantiated yet.
-				    		lblServerStatusIndicator.setText("OFFLINE");
-				    	}
-				    }
-				});
+				//start our update timer
+				statusUpdate.start();
 			}
 		});
 		btnStartServer.setToolTipText("Start the server.");
@@ -154,7 +140,7 @@ public class NetworkedChatServer {
 		JLabel lblServerStatus = new JLabel("Server Status: ");
 		controls_panel.add(lblServerStatus);
 		
-		lblServerStatusIndicator = new JLabel("Fix me!");
+		lblServerStatusIndicator = new JLabel("OFFLINE");
 		lblServerStatusIndicator.setToolTipText("Current server status.");
 		lblServerStatusIndicator.setFont(new Font("Tahoma", Font.BOLD, 14));
 		controls_panel.add(lblServerStatusIndicator);
@@ -212,6 +198,22 @@ public class NetworkedChatServer {
 		txtpnStatus.setEditable(false);
 		scrlpnStatus = new JScrollPane(txtpnStatus);
 		status_panel.add(scrlpnStatus, BorderLayout.CENTER);
+		
+		//Status update timer
+		statusUpdate = new Timer(1000, new ActionListener() {
+		    public void actionPerformed(ActionEvent evt) {
+		    	//make sure stuff exists in the first place
+		    	if (lblServerStatusIndicator != null && server != null) {
+		    		//check server status
+		    		if (server.isRunning())
+		    			lblServerStatusIndicator.setText("ONLINE");
+		    		else
+		    			lblServerStatusIndicator.setText("OFFLINE");
+		    	} else if (lblServerStatusIndicator != null) {//label exists, server not instantiated yet.
+		    		lblServerStatusIndicator.setText("OFFLINE");
+		    	}
+		    }
+		});
 	}
 	
 	public void updateStatus(String line) {
