@@ -16,7 +16,7 @@ public class Server implements Runnable {
 	private byte[] buffer = new byte[4096];//buffer for reading
 	private BufferedInputStream is;
 	private BufferedOutputStream os;
-	private Protocol prot = new Protocol(true);
+	private ServerProtocol prot = new ServerProtocol();
 	private long lastReply = 0; //time of last received response.
 	private Messager m;
 	private Socket clisock;

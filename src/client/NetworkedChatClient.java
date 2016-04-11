@@ -1,4 +1,4 @@
-package Client;
+package client;
 
 import java.awt.EventQueue;
 
@@ -11,9 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JTextPane;
-import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
-import java.io.PrintWriter;
 import java.awt.event.ActionEvent;
 
 public class NetworkedChatClient {
@@ -24,9 +22,7 @@ public class NetworkedChatClient {
 	private JTextField txtServerPort;
 	private JTextField txtUserInput;
 	
-	private Protocol proto;
-	String text;
-	//PrintWriter out;
+	String message;
 
 	/**
 	 * Launch the application.
@@ -123,7 +119,7 @@ public class NetworkedChatClient {
 		txtUserInput.setColumns(10);
 		txtUserInput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				text = txtUserInput.getText();
+				message = txtUserInput.getText();
 				txtUserInput.setText("");
 			}
 		});
@@ -132,7 +128,7 @@ public class NetworkedChatClient {
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: send message to the server
-				proto.respondString(text);
+				//proto.respondString(text);
 			}
 		});
 		messageEntry_splitPane.setRightComponent(btnSend);

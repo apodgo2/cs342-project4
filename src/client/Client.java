@@ -13,7 +13,7 @@ public class Client {
 	private BufferedOutputStream os;
 	private int count = 0;
 	private static Scanner scan = new Scanner(System.in);
-	private Protocol prot = new Protocol(false);
+	private ClientProtocol prot = new ClientProtocol();
 
 	public Client(Socket sock) {
 		try {

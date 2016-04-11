@@ -4,15 +4,9 @@ package client;
 //It keeps track of states like the number of messages sent and received, for ex.
 //And it uses these metrics to determine what to send next.
 
-public class Protocol {
+public class ClientProtocol {
 
-	@SuppressWarnings("unused")
-	private static boolean isServer = true; //different protocol for client.
 	private int i = 0;
-
-	public Protocol(boolean isServer) {
-		Protocol.isServer = isServer;
-	}
 
 	//parses input, decides what to send back, and then returns that.
 	//if this returns null, or otherwise empty string, the connection will close.
