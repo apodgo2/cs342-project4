@@ -142,7 +142,7 @@ public class Server implements Runnable {
 	}
 
 	public synchronized int hashCode() {
-		return is.hashCode()+os.hashCode()+fromByteArray(buffer);
+		return 17+(is.hashCode()+os.hashCode())*31;
 		//not guaranteed to be unique. include count?
 	}
 }
