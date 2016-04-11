@@ -4,42 +4,54 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Scanner;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
-public class Client {
+public class Client implements Runnable {
 
 	private byte[] buffer = new byte[4096];
+	private NetworkedChatClient parent;
 	private BufferedInputStream is;
 	private BufferedOutputStream os;
 	private int count = 0;
-	private static Scanner scan = new Scanner(System.in);
-	private ClientProtocol prot = new ClientProtocol();
+	private Calendar cal = Calendar.getInstance();
+	private ClientProtocol proto;
+	private boolean isConnected = false;
+	private String username;
 
-	public Client(Socket sock) {
+	public Client(Socket sock, String username, NetworkedChatClient parent) {
+		this.parent = parent;
+		this.username = username;
 		try {
 			is = new BufferedInputStream(sock.getInputStream());
 			os = new BufferedOutputStream(sock.getOutputStream());
+			parent.updateStatus("New Client "+this.hashCode()+" successfully created.");
+			isConnected = true;
 		} catch (IOException ex) {
-			System.out.println("IOException in "+this.hashCode());
+			parent.updateStatus("IOException in "+this.hashCode()+", Client unable to connect.");
+			ex.printStackTrace();
+			isConnected = false;
 		}
-		System.out.println("New Client "+this.hashCode()+" successfully created.");
-		String response = "!default!";
-		while(response != "" && response != null && !response.isEmpty()) {
-			this.respond();
-			response = this.listen(is);
-			if (response.contains(prot.goodbye())) {
-				System.out.println("Server says goodbye, closes connection.");
-				break;
-			} else {
-				System.out.println("Received reply from server: \n"+response);
+		proto = new ClientProtocol(username);
+	}
+	
+	@Override
+	public void run() {
+		if (isConnected) {
+			String serverMsg = "";
+			while(serverMsg != "" && serverMsg != null && !serverMsg.isEmpty()) {
+				serverMsg = this.listen(is);
+				proto.handleTransaction(serverMsg);
 			}
 		}
 	}
 
-	private void respond() {
+	private void sendMessage(String textMessage) {
 		count++;
-		System.out.println("Type message #"+count+", you are go:");
-		this.send(os, (String) scan.nextLine());
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+		this.send(os, (String) proto.message("["+dateFormat.format(cal.getTime())+"] "+textMessage, username));
+		parent.updateStatus(username+": "+"["+dateFormat.format(cal.getTime())+"] "+textMessage);
 	}
 
 	private void send(BufferedOutputStream output, String out) {
@@ -71,8 +83,16 @@ public class Client {
 		return count;
 	}
 
-	public static void disconnect() {
-
+	public void disconnect() {
+		this.isConnected = false;
+		send(os, proto.goodbye());
+		try {
+			os.close();
+			is.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

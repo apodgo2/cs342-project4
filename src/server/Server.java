@@ -16,7 +16,7 @@ public class Server implements Runnable {
 	private byte[] buffer = new byte[4096];//buffer for reading
 	private BufferedInputStream is;
 	private BufferedOutputStream os;
-	private ServerProtocol prot = new ServerProtocol();
+	private ServerProtocol proto;
 	private long lastReply = 0; //time of last received response.
 	private Messager m;
 	private Socket clisock;
@@ -28,6 +28,7 @@ public class Server implements Runnable {
 		m = new Messager(myID);
 		clisock = clientSocket;
 		this.parent = parent;
+		this.proto = new ServerProtocol(this);
 
 		try {
 			clientSocket.setSoTimeout(ServerManager.timeout);
@@ -50,7 +51,7 @@ public class Server implements Runnable {
 	public void run() {
 		if (isRunning) {
 			//thread started, now we're just waiting for replies and responding.
-			String myresponse = "Hello!";
+			String myresponse = "!default!";
 			try {
 				while(isRunning && myresponse != "" && myresponse != null && !myresponse.isEmpty()) {
 					//read
@@ -63,7 +64,7 @@ public class Server implements Runnable {
 					this.send(os, myresponse);
 					if (!myresponse.isEmpty()) {m.println("Tx: "+ myresponse, true);}
 				}
-				if ( send(os, prot.goodbye()) ) {m.println("Goodbye!", true);}
+				if ( send(os, proto.goodbye()) ) {m.println("Goodbye!", true);}
 				this.close();
 			} catch (IOException e) {
 				m.println("IOException", false);
@@ -94,7 +95,7 @@ public class Server implements Runnable {
 		lastReply = System.currentTimeMillis();
 		String decoded = new String(buffer, "UTF-8").trim();
 		m.println("Rx: "+decoded, true);
-		return prot.respondString(decoded);
+		return proto.handleTransaction(decoded);
 	}
 
 	private synchronized boolean send(BufferedOutputStream output, String out) throws IOException {
@@ -106,7 +107,7 @@ public class Server implements Runnable {
 				m.println("Write got SocketException");
 				return false;
 			}
-		} else if (out.equals(prot.goodbye())) {
+		} else if (out.equals(proto.goodbye())) {
 			m.println("Tried to send a goodbye, but we're already closed.", true);
 			return false;
 		}
