@@ -176,7 +176,7 @@ public class NetworkedChatClient {
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: send message to the server
-				client.sendMessage(txtUserInput.getText().trim());
+				client.sendMessage(txtUserInput.getText().trim()+".");
 				txtUserInput.setText("");
 			}
 		});
