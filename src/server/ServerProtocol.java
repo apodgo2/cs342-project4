@@ -1,5 +1,6 @@
 package server;
 
+import java.util.Map.Entry;
 
 //This class reperesents a conversation that's going on between client and server.
 //It keeps track of states like the number of messages sent and received, for ex.
@@ -42,8 +43,8 @@ public class ServerProtocol extends SharedProtocol {
 	@Override
 	public String handleHello(String message) {
 		//TODO: have this update a username variable in server with the client username, and tell other clients of connection
-		//return a heartbeat
-		return heartbeat();
+		//return a list of users
+		return listusers();
 	}
 	//TX FORMATS
 	@Override
@@ -53,5 +54,14 @@ public class ServerProtocol extends SharedProtocol {
 	@Override
 	public String goodbye() {
 		return goodbyePrefix+":Goodbye!";
+	}
+	@Override
+	public String listusers() {
+		//iterate through all servers in ServerManager, get their usernames and make a comma seperated list
+		String output = listusersPrefix+":";
+		for (Entry<Integer, Server> entry : parent.getParent().getServerList().entrySet()) {
+			output+= entry.getValue()+",";
+		}
+		return output.substring(0,output.length()-1);//ommit last comma.
 	}
 }

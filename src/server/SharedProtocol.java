@@ -1,5 +1,8 @@
 package server;
 
+import java.util.Arrays;
+import java.util.List;
+
 /*
  * THE ONLY THING this class does is format messages, and respond to message events.
  * If you want to send a String, you pass it to this protocol,
@@ -87,7 +90,7 @@ public class SharedProtocol {
 	}
 	//override me
 	public String listusers() {
-		return "";
+		return listusersPrefix+":";
 	}
 	public String hello(String username) {
 		return helloPrefix+"-"+username+":Hello!";
@@ -103,6 +106,22 @@ public class SharedProtocol {
 	}
 	public String getPrefix(String message) {
 		return new String(message.charAt(0)+"");
+	}
+	//gets the clients from a listupdate
+	public String[] getClients(String message) {
+		if (!getPrefix(message).equals(listusersPrefix)) {
+			return null;
+		}
+		
+		//count number of commas in string
+		int counter = message.split(",").length;
+		//return a List of elements
+		List<String> items = Arrays.asList(message.substring(message.charAt(':')).split("\\s*,\\s*"));
+		String array[] = new String[items.size()];
+		for (int i = 0; i < items.size(); i++) {
+			array[i] = items.get(i);
+		}
+		return array;
 	}
 	
 	public int getMessageCount() {

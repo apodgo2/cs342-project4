@@ -33,7 +33,7 @@ public class Client implements Runnable {
 			ex.printStackTrace();
 			isConnected = false;
 		}
-		proto = new ClientProtocol(username);
+		proto = new ClientProtocol(username, this);
 	}
 	
 	@Override
@@ -81,6 +81,9 @@ public class Client implements Runnable {
 
 	public int getCount() {
 		return count;
+	}
+	public NetworkedChatClient getParent() {
+		return parent;
 	}
 
 	public void disconnect() {

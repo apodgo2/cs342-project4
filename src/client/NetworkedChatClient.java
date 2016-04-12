@@ -21,6 +21,7 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.awt.event.ActionEvent;
+import javax.swing.JList;
 
 public class NetworkedChatClient {
 
@@ -33,6 +34,7 @@ public class NetworkedChatClient {
 	private JTextPane txtpnMessages;
 	private JScrollPane scrlpnMessages;
 	private Client client;
+	JList<String> clientList;
 	
 	String message;
 
@@ -123,10 +125,23 @@ public class NetworkedChatClient {
 		messages_splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		splitPane.setRightComponent(messages_splitPane);
 		
+		JPanel messagedisplay_panel = new JPanel();
+		messages_splitPane.setLeftComponent(messagedisplay_panel);
+		messagedisplay_panel.setLayout(new BorderLayout(0, 0));
+		
+		JSplitPane messagedisplay_splitPane = new JSplitPane();
+		messagedisplay_splitPane.setResizeWeight(0.78);
+		messagedisplay_splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+		messagedisplay_panel.add(messagedisplay_splitPane);
+		
+		
 		txtpnMessages = new JTextPane();
 		txtpnMessages.setText(" ");
 		scrlpnMessages = new JScrollPane(txtpnMessages);
-		messages_splitPane.setLeftComponent(scrlpnMessages);
+		messagedisplay_splitPane.setLeftComponent(scrlpnMessages);
+		
+		clientList = new JList<String>();
+		messagedisplay_splitPane.setRightComponent(clientList);
 		
 		JPanel messageEntry_panel = new JPanel();
 		messages_splitPane.setRightComponent(messageEntry_panel);
@@ -161,6 +176,18 @@ public class NetworkedChatClient {
 		if (txtpnMessages != null && line != null && line != "") {
 			txtpnMessages.setText(txtpnMessages.getText()+line);
 		}
+	}
+	
+	public void updateClientList(String[] clients) {
+		if (clients == null) {return;}
+	 	clientList.clearSelection();
+	 	clientList.setListData(clients);
+	}
+	//array of clients if multiple or single clients in client list selected
+	//null if no clients selected, to send to everybody
+	@SuppressWarnings("deprecation")
+	public String[] getClientsToMessage() {
+		return (String[]) clientList.getSelectedValues();
 	}
 
 }

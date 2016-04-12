@@ -129,6 +129,9 @@ public class ServerManager implements Runnable {
 			m.println(x.getKey()+":\tSH#"+x.getValue().getID()+"\t"+x.getValue().getInetAddress().getHostName()+"\t"+x.getValue().getInetAddress().getHostAddress());
 		}
 	}
+	public ConcurrentHashMap<Integer, Server> getServerList() {
+		return serverList;
+	}
 	
 	public boolean isRunning() {
 		return serverRunning;

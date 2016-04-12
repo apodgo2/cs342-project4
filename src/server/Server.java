@@ -146,4 +146,8 @@ public class Server implements Runnable {
 		return 17+(is.hashCode()+os.hashCode())*31;
 		//not guaranteed to be unique. include count?
 	}
+	
+	public ServerManager getParent() {
+		return parent;
+	}
 }

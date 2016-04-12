@@ -9,10 +9,12 @@ import server.SharedProtocol;
 public class ClientProtocol extends SharedProtocol {
 	
 	String username;
+	Client parent;
 	
-	public ClientProtocol(String username) {
+	public ClientProtocol(String username, Client parent) {
 		if (username.equals("") || username.isEmpty()) {this.username = "!default!";}
 		this.username = username;
+		this.parent = parent;
 	}
 	
 	//RX FORMATS
@@ -23,7 +25,8 @@ public class ClientProtocol extends SharedProtocol {
 	}
 	@Override
 	public String handleListusers(String message) {
-		//TODO: use the usernames included after the : and seperated by , to build a list of users, and display them on GUI window
+		//uses the usernames included after the : and seperated by , to build a list of users, and display them on GUI window
+		parent.getParent().updateClientList(getClients(message));
 		return null;
 	}
 	//TX FORMATS
