@@ -38,6 +38,12 @@ public class ServerProtocol extends SharedProtocol {
 	public String handleGoodbye(String message) {
 		//TODO: client disconnected, get username from message, tell ServerManager to close that connection if not already closed. See handleHello()
 		//return null so that the Server breaks off the connection
+		parent.setUsername(getUsername(message));
+		for (Entry<Integer, Server> entry : parent.getParent().getServerList().entrySet()) {
+			if (entry.getValue().hashCode() != parent.hashCode()) {//as long as it isn't our parent
+				entry.getValue().forwardUpdate(getUsername(message)+" has disconnected.");
+			}
+		}
 		parent.getMessager().println("Goodbye!");
 		return null;
 	}
@@ -55,8 +61,10 @@ public class ServerProtocol extends SharedProtocol {
 		//return a list of users
 		parent.setUsername(getUsername(message));
 		for (Entry<Integer, Server> entry : parent.getParent().getServerList().entrySet()) {
+			parent.getMessager().println(getUsername(message)+" has connected.");
 			if (entry.getValue().hashCode() != parent.hashCode()) {//as long as it isn't our parent
 				entry.getValue().forwardUpdate(getUsername(message)+" has connected.");//this tells the client the users connected, and forces them to update their client list
+				
 			}
 		}
 		return listusers();
@@ -90,8 +98,12 @@ public class ServerProtocol extends SharedProtocol {
 		//iterate through all servers in ServerManager, get their usernames and make a comma seperated list
 		String output = listusersPrefix+":";
 		for (Entry<Integer, Server> entry : parent.getParent().getServerList().entrySet()) {
-			output+= entry.getValue().getUsername()+",";
+			if (entry.getValue().getUsername() != null && entry.getValue().getUsername() != "null") {
+				output+= entry.getValue().getUsername()+",";
+				System.out.println(output);
+			}
 		}
+		if (debug) {System.out.println("TX: "+output.substring(0,output.length()-1));}
 		return output.substring(0,output.length()-1);//ommit last comma.
 	}
 }

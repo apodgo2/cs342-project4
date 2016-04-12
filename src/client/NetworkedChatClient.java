@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.awt.event.ActionEvent;https://github.com/apodgo2/cs342-project4/blob/master/src/client/NetworkedChatClient.java
+import java.awt.event.ActionEvent;//https://github.com/apodgo2/cs342-project4/blob/master/src/client/NetworkedChatClient.java
 import javax.swing.JList;
 
 public class NetworkedChatClient {

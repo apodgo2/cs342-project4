@@ -21,6 +21,7 @@ public class ClientProtocol extends SharedProtocol {
 	@Override
 	public String handleUpdate(String message) {
 		//TODO: display this message in the message window as a specially formatted message (e.g., italics, grey text, bold or something, be creative)
+		parent.getParent().updateStatus("SERVER: "+message.substring(message.indexOf(':')));
 		parent.getParent().updateClientList(getClients(message));//update client list, JIC the update is disconnect/connect
 		return null;
 	}

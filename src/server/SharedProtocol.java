@@ -129,11 +129,8 @@ public class SharedProtocol {
 	
 	//PARSE RESPONSES
 	public String getUsername(String message) {
-		if (!(getPrefix(message).equals(messagePrefix) || getPrefix(message).equals(goodbyePrefix) || getPrefix(message).equals(helloPrefix))) {
 			//origin username only matters for messages and goodbyes from clients, not stuff sent from the server program.
 			return message.substring(2, message.indexOf(':'));
-		}
-		return null;
 	}
 	public String getPrefix(String message) {
 		return new String(message.charAt(0)+"");
