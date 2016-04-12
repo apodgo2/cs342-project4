@@ -33,7 +33,7 @@ public class NetworkedChatClient {
 	private JTextField txtUserInput;
 	private JTextPane txtpnMessages;
 	private JScrollPane scrlpnMessages;
-	private Client client;
+	private static Client client;
 	JList<String> clientList;
 	
 	String message;
@@ -52,6 +52,14 @@ public class NetworkedChatClient {
 				}
 			}
 		});
+		
+		//shutdown hook to make sure our client is properly disconnected
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+	        public void run() {
+	            System.out.println("Shutting down...");
+	            client.disconnect();
+	        }
+	    }, "Shutdown-thread"));
 	}
 
 	/**

@@ -176,4 +176,7 @@ public class Server implements Runnable {
 	public String getUsername() {
 		return this.username;	
 	}
+	public void updateLastReply() {
+		lastReply = System.currentTimeMillis();
+	}
 }

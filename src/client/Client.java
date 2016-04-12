@@ -1,5 +1,7 @@
 package client;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -7,6 +9,8 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import javax.swing.Timer;
 
 import server.SharedProtocol;
 
@@ -21,6 +25,7 @@ public class Client implements Runnable {
 	private ClientProtocol proto;
 	private boolean isConnected = false;
 	private String username;
+	private Timer heartbeatTimer;
 
 	public Client(Socket sock, String username, NetworkedChatClient parent) {
 		this.parent = parent;
@@ -38,6 +43,13 @@ public class Client implements Runnable {
 		proto = new ClientProtocol(username, this);
 		if (isConnected) {//say hello!
 			send(os, proto.hello(username));
+			//start heartbeat timer: we have to heartbeat at least once every 10 seconds or connection will timeout
+			heartbeatTimer = new Timer(5000, new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					send(os, proto.heartbeat());
+				}
+			});
+			heartbeatTimer.start();
 		}
 	}
 	
@@ -99,6 +111,7 @@ public class Client implements Runnable {
 	public void disconnect() {
 		this.isConnected = false;
 		send(os, proto.goodbye());
+		heartbeatTimer.stop();
 		try {
 			os.close();
 			is.close();

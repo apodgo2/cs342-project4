@@ -36,8 +36,9 @@ public class ServerProtocol extends SharedProtocol {
 	}
 	@Override
 	public String handleHeartbeat(String message) {
-		//TODO: have this update a variable in server showing last time the server received a heartbeat (use lastReply)
+		//this updates a variable in server showing last time the server received a heartbeat (use lastReply)
 		//return a heartbeat
+		parent.updateLastReply();
 		return heartbeat();
 	}
 	@Override

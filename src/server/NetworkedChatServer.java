@@ -26,7 +26,7 @@ public class NetworkedChatServer {
 	private JTextField txtServerIP;
 	private JTextField txtServerPort;
 	private JLabel lblServerStatusIndicator;
-	private ServerManager server;
+	private static ServerManager server;
 	private Timer statusUpdate;
 	private JTextPane txtpnStatus;
 	private JScrollPane scrlpnStatus;
@@ -46,6 +46,14 @@ public class NetworkedChatServer {
 				}
 			}
 		});
+		
+		//shutdown hook to make sure our server is properly disconnected
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			public void run() {
+				System.out.println("Shutting down...");
+				server.shutdownServers();
+			}
+		}, "Shutdown-thread"));
 	}
 
 	/**
