@@ -42,8 +42,14 @@ public class ServerProtocol extends SharedProtocol {
 	}
 	@Override
 	public String handleHello(String message) {
-		//TODO: have this update a username variable in server with the client username, and tell other clients of connection
+		//this updates a username variable in server with the client username, and tells other clients of connection
 		//return a list of users
+		parent.setUsername(getUsername(message));
+		for (Entry<Integer, Server> entry : parent.getParent().getServerList().entrySet()) {
+			if (entry.getValue().hashCode() != parent.hashCode()) {//as long as it isn't our parent
+				entry.getValue().forwardUpdate(getUsername(message)+" has connected.");//this tells the client the users connected, and forces them to update their client list
+			}
+		}
 		return listusers();
 	}
 	//TX FORMATS
@@ -60,7 +66,7 @@ public class ServerProtocol extends SharedProtocol {
 		//iterate through all servers in ServerManager, get their usernames and make a comma seperated list
 		String output = listusersPrefix+":";
 		for (Entry<Integer, Server> entry : parent.getParent().getServerList().entrySet()) {
-			output+= entry.getValue()+",";
+			output+= entry.getValue().getUsername()+",";
 		}
 		return output.substring(0,output.length()-1);//ommit last comma.
 	}

@@ -34,6 +34,9 @@ public class Client implements Runnable {
 			isConnected = false;
 		}
 		proto = new ClientProtocol(username, this);
+		if (isConnected) {//say hello!
+			send(os, proto.hello(username));
+		}
 	}
 	
 	@Override

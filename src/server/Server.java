@@ -13,6 +13,7 @@ public class Server implements Runnable {
 
 	public static volatile AtomicInteger currentID = new AtomicInteger(1);//starting at one, because connections are numbered that way in main
 	private int myID = 1;
+	private String username = "!default!";
 	private byte[] buffer = new byte[4096];//buffer for reading
 	private BufferedInputStream is;
 	private BufferedOutputStream os;
@@ -132,6 +133,24 @@ public class Server implements Runnable {
 			m.println("Closed connection to client "+clisock.getInetAddress().getHostName()+"("+clisock.getInetAddress()+")", false);
 		}
 	}
+	
+	//Messaging functions
+	public void forwardMessage(String message, String username) {
+		try {
+			this.send(os, proto.message(message, username));
+		} catch (IOException e) {
+			ServerManager.getParent().updateStatus("ERROR: Unable to send message to client!");
+			e.printStackTrace();
+		}
+	}
+	public void forwardUpdate(String message) {
+		try {
+			this.send(os, proto.update(message));
+		} catch (IOException e) {
+			ServerManager.getParent().updateStatus("ERROR: Unable to send update to client!");
+			e.printStackTrace();
+		}
+	}
 
 	public int getID() {
 		return myID;
@@ -149,5 +168,12 @@ public class Server implements Runnable {
 	
 	public ServerManager getParent() {
 		return parent;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;	
+	}
+	public String getUsername() {
+		return this.username;	
 	}
 }
