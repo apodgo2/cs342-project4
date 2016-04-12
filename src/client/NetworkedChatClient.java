@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.awt.event.ActionEvent;
+import java.awt.event.ActionEvent;https://github.com/apodgo2/cs342-project4/blob/master/src/client/NetworkedChatClient.java
 import javax.swing.JList;
 
 public class NetworkedChatClient {
@@ -164,12 +164,20 @@ public class NetworkedChatClient {
 		txtUserInput.setText("Type your message here.");
 		messageEntry_splitPane.setLeftComponent(txtUserInput);
 		txtUserInput.setColumns(10);
+		txtUserInput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//TODO: send message to the server
+				client.sendMessage(txtUserInput.getText().trim());
+				txtUserInput.setText("");
+			}
+		});
 		
 		JButton btnSend = new JButton("Send");
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: send message to the server
 				client.sendMessage(txtUserInput.getText().trim());
+				txtUserInput.setText("");
 			}
 		});
 		messageEntry_splitPane.setRightComponent(btnSend);
@@ -193,3 +201,4 @@ public class NetworkedChatClient {
 	}
 
 }
+
