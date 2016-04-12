@@ -185,9 +185,8 @@ public class NetworkedChatClient {
 	}
 	//array of clients if multiple or single clients in client list selected
 	//null if no clients selected, to send to everybody
-	@SuppressWarnings("deprecation")
 	public String[] getClientsToMessage() {
-		return (String[]) clientList.getSelectedValues();
+		return (String[]) clientList.getSelectedValuesList().toArray();
 	}
 
 }

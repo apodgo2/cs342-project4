@@ -1,5 +1,6 @@
 package server;
 
+import java.util.List;
 import java.util.Map.Entry;
 
 //This class reperesents a conversation that's going on between client and server.
@@ -23,8 +24,7 @@ public class ServerProtocol extends SharedProtocol {
 	//RX FORMATS
 	@Override
 	public String handleMessage(String message) {
-		//TODO: have this forward messages to every client
-		//TODO: add a method in server to send a String to it's client using sendString, so we can call it from handleMessage()
+		//TODO: have this forward messages to every client, use the sendMessage() in Server, see handlePm for example
 		//return a heartbeat
 		return heartbeat();
 	}
@@ -51,6 +51,19 @@ public class ServerProtocol extends SharedProtocol {
 			}
 		}
 		return listusers();
+	}
+	@Override
+	public String handlePM(String message) {
+		//this forwards a PM to it's intended recipients
+		List<String> recipients = getRecipients(message);
+		for (Entry<Integer, Server> entry : parent.getParent().getServerList().entrySet()) {
+			if (entry.getValue().hashCode() != parent.hashCode()) {//as long as it isn't our parent
+				if (recipients.contains(entry.getValue().getUsername())) {//if that Server is on the recipient list
+					entry.getValue().forwardMessage(message.substring(message.indexOf(':')), getUsername(message));
+				}
+			}
+		}
+		return heartbeat();
 	}
 	//TX FORMATS
 	@Override

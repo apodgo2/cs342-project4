@@ -8,6 +8,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import server.SharedProtocol;
+
 public class Client implements Runnable {
 
 	private byte[] buffer = new byte[4096];
@@ -53,8 +55,13 @@ public class Client implements Runnable {
 	private void sendMessage(String textMessage) {
 		count++;
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-		this.send(os, (String) proto.message("["+dateFormat.format(cal.getTime())+"] "+textMessage, username));
-		parent.updateStatus(username+": "+"["+dateFormat.format(cal.getTime())+"] "+textMessage);
+		if (parent.getClientsToMessage().length == 0) {//send to everybody
+			this.send(os, (String) proto.message("["+dateFormat.format(cal.getTime())+"] "+textMessage, username));
+			parent.updateStatus(username+": "+"["+dateFormat.format(cal.getTime())+"] "+textMessage);
+		} else {//send a PM
+			this.send(os, (String) proto.pm("["+dateFormat.format(cal.getTime())+"] "+textMessage, parent.getClientsToMessage()));
+			parent.updateStatus(username+": PM("+SharedProtocol.arrayOfUsersToString(parent.getClientsToMessage())+") ["+dateFormat.format(cal.getTime())+"] "+textMessage);
+		}
 	}
 
 	private void send(BufferedOutputStream output, String out) {

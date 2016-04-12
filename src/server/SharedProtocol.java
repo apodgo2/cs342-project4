@@ -17,8 +17,9 @@ public class SharedProtocol {
 	public static final String listusersPrefix = "L";//this is a list of users sent from the server to populate the user list
 	public static final String heartbeatPrefix = "H";//TODO: implement heartbeat
 	public static final String helloPrefix = "C";//TODO: Implement hello message so Server's can know their client's username.
+	public static final String pmPrefix = "P"; //private messages are messages with a paramater that specifies who they should go to
 	
-	private int i = 0;
+	protected int i = 0;
 	
 	//This function handles any transaction received by either party by calling the appropriate response handler
 	//DO NOT OVERRIDE this function, conform to it's format please
@@ -45,6 +46,9 @@ public class SharedProtocol {
 		if (getPrefix(message).equals(helloPrefix)) {
 			return handleHello(message);
 		}
+		if (getPrefix(message).equals(pmPrefix)) {
+			return handlePM(message);
+		}
 		return null;
 	}
 	
@@ -67,14 +71,20 @@ public class SharedProtocol {
 	public String handleHello(String message) {
 		return null;
 	}
+	public String handlePM(String message) {
+		return null;
+	}
 	//TX FORMATS
 	public String heartbeat() {
+		//format: prefix:Heartbeat!
 		return heartbeatPrefix+":Heartbeat!";
 	}
 	public String goodbye() {
+		//format: prefix:Goodbye!
 		return goodbyePrefix+":Goodbye!";
 	}
 	public String message(String input, String username) {
+		//format: prefix-usernameofsender:message
 		i++;
 		if (input == "" || input == null || input.isEmpty()) {
 			return null;
@@ -82,6 +92,7 @@ public class SharedProtocol {
 		return messagePrefix+"-"+username+":"+input;
 	}
 	public String update(String input) {
+		//format: prefix:message
 		i++;
 		if (input == "" || input == null || input.isEmpty()) {
 			return null;
@@ -90,9 +101,19 @@ public class SharedProtocol {
 	}
 	//override me
 	public String listusers() {
+		i++;
+		//format: prefix:listofconnectedclients
 		return listusersPrefix+":";
 	}
+	//override me
+	public String pm(String input, String[] recipients) {
+		i++;
+		//format: prefix-usernameofsender+listofrecipients:message
+		return pmPrefix+"-!default!+!default!:";
+	}
 	public String hello(String username) {
+		//format: prefix-usernameofsender:Hello!
+		i++;
 		return helloPrefix+"-"+username+":Hello!";
 	}
 	
@@ -113,18 +134,31 @@ public class SharedProtocol {
 			return null;
 		}
 		
-		//count number of commas in string
-		int counter = message.split(",").length;
 		//return a List of elements
-		List<String> items = Arrays.asList(message.substring(message.charAt(':')).split("\\s*,\\s*"));
-		String array[] = new String[items.size()];
-		for (int i = 0; i < items.size(); i++) {
-			array[i] = items.get(i);
+		List<String> items = Arrays.asList(message.substring(message.indexOf(':')).split("\\s*,\\s*"));
+		return (String[]) items.toArray();
+	}
+	//gets the intended recipients of a PM
+	public List<String> getRecipients(String message) {
+		if (!getPrefix(message).equals(pmPrefix)) {
+			return null;
 		}
-		return array;
+		
+		List<String> items = Arrays.asList(message.substring(message.indexOf('+'), message.indexOf(':')).split("\\s*,\\s*"));
+		return items;
 	}
 	
 	public int getMessageCount() {
 		return i;
+	}
+	
+	//helperfunction:
+	public static String arrayOfUsersToString(String[] arrayOfUsers) {
+		//for example, with the getClientsToMessage() function in NetworkedChatClient
+		String output = "";
+		for (String s : arrayOfUsers) {
+			output += s + ",";
+		}
+		return output.substring(0,output.length()-1);//ommit last comma.
 	}
 }

@@ -39,4 +39,10 @@ public class ClientProtocol extends SharedProtocol {
 	public String heartbeat() {
 		return heartbeatPrefix+":Heartbeat!";
 	}
+	@Override
+	public String pm(String message, String[] recipients) {
+		i++;
+		//format: prefix-usernameofsender+listofrecipients:message
+		return pmPrefix+"-"+username+arrayOfUsersToString(recipients)+message;
+	}
 }
