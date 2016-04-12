@@ -124,6 +124,9 @@ public class NetworkedChatClient {
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
+				if (client.isConnected()) {
+					updateStatus("Connected to "+txtServerIP.getText().trim()+"\n");
+				}
 			}
 		});
 		control_panel.add(btnConnect);

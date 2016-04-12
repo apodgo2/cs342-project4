@@ -19,6 +19,8 @@ public class SharedProtocol {
 	public static final String helloPrefix = "C";//TODO: Implement hello message so Server's can know their client's username.
 	public static final String pmPrefix = "P"; //private messages are messages with a paramater that specifies who they should go to
 	
+	protected static final boolean debug = true;
+	
 	protected int i = 0;
 	
 	//This function handles any transaction received by either party by calling the appropriate response handler
@@ -28,6 +30,7 @@ public class SharedProtocol {
 		if (message == "" || message == null || message.isEmpty()) {
 			return null;
 		}
+		if (debug) {System.out.println("RX: "+message);}
 		if (getPrefix(message).equals(goodbyePrefix)) {
 			return handleGoodbye(message);
 		}
@@ -77,10 +80,12 @@ public class SharedProtocol {
 	//TX FORMATS
 	public String heartbeat() {
 		//format: prefix:Heartbeat!
+		if (debug) {System.out.println("TX: "+"heartbeat");}
 		return heartbeatPrefix+":Heartbeat!";
 	}
 	public String goodbye() {
 		//format: prefix:Goodbye!
+		if (debug) {System.out.println("TX: "+"goodbye");}
 		return goodbyePrefix+":Goodbye!";
 	}
 	public String message(String input, String username) {
@@ -89,6 +94,7 @@ public class SharedProtocol {
 		if (input == "" || input == null || input.isEmpty()) {
 			return null;
 		}
+		if (debug) {System.out.println("TX: "+messagePrefix+"-"+username+":"+input);}
 		return messagePrefix+"-"+username+":"+input;
 	}
 	public String update(String input) {
@@ -97,23 +103,27 @@ public class SharedProtocol {
 		if (input == "" || input == null || input.isEmpty()) {
 			return null;
 		}
+		if (debug) {System.out.println("TX: "+updatePrefix+":"+input);}
 		return updatePrefix+":"+input;
 	}
 	//override me
 	public String listusers() {
 		i++;
 		//format: prefix:listofconnectedclients
+		if (debug) {System.out.println("TX: "+listusersPrefix+":");}
 		return listusersPrefix+":";
 	}
 	//override me
 	public String pm(String input, String[] recipients) {
 		i++;
 		//format: prefix-usernameofsender+listofrecipients:message
+		if (debug) {System.out.println("TX: "+pmPrefix+"-!default!+!default!:");}
 		return pmPrefix+"-!default!+!default!:";
 	}
 	public String hello(String username) {
 		//format: prefix-usernameofsender:Hello!
 		i++;
+		if (debug) {System.out.println("TX: "+helloPrefix+"-"+username+":Hello!");}
 		return helloPrefix+"-"+username+":Hello!";
 	}
 	

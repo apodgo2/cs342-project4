@@ -33,10 +33,10 @@ public class Client implements Runnable {
 		try {
 			is = new BufferedInputStream(sock.getInputStream());
 			os = new BufferedOutputStream(sock.getOutputStream());
-			parent.updateStatus("New Client "+this.hashCode()+" successfully created.");
+			parent.updateStatus("New Client "+this.hashCode()+" successfully created.\n");
 			isConnected = true;
 		} catch (IOException ex) {
-			parent.updateStatus("IOException in "+this.hashCode()+", Client unable to connect.");
+			parent.updateStatus("IOException in "+this.hashCode()+", Client unable to connect.\n");
 			ex.printStackTrace();
 			isConnected = false;
 		}
@@ -69,10 +69,10 @@ public class Client implements Runnable {
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 		if (parent.getClientsToMessage().length == 0) {//send to everybody
 			this.send(os, (String) proto.message("["+dateFormat.format(cal.getTime())+"] "+textMessage, username));
-			parent.updateStatus(username+": "+"["+dateFormat.format(cal.getTime())+"] "+textMessage);
+			parent.updateStatus(username+": "+"["+dateFormat.format(cal.getTime())+"] "+textMessage+"\n");
 		} else {//send a PM
 			this.send(os, (String) proto.pm("["+dateFormat.format(cal.getTime())+"] "+textMessage, parent.getClientsToMessage()));
-			parent.updateStatus(username+": PM("+SharedProtocol.arrayOfUsersToString(parent.getClientsToMessage())+") ["+dateFormat.format(cal.getTime())+"] "+textMessage);
+			parent.updateStatus(username+": PM("+SharedProtocol.arrayOfUsersToString(parent.getClientsToMessage())+") ["+dateFormat.format(cal.getTime())+"] "+textMessage+"\n");
 		}
 	}
 
@@ -106,6 +106,9 @@ public class Client implements Runnable {
 	}
 	public NetworkedChatClient getParent() {
 		return parent;
+	}
+	public boolean isConnected() {
+		return isConnected;
 	}
 
 	public void disconnect() {

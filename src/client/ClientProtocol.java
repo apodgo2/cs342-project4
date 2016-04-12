@@ -38,16 +38,19 @@ public class ClientProtocol extends SharedProtocol {
 	//TX FORMATS
 	@Override
 	public String goodbye() {
+		if (debug) {System.out.println("TX: "+goodbyePrefix+"-"+username+":Goodbye!");}
 		return goodbyePrefix+"-"+username+":Goodbye!";
 	}
 	@Override
 	public String heartbeat() {
+		if (debug) {System.out.println("TX: "+heartbeatPrefix+":Heartbeat!");}
 		return heartbeatPrefix+":Heartbeat!";
 	}
 	@Override
 	public String pm(String message, String[] recipients) {
 		i++;
 		//format: prefix-usernameofsender+listofrecipients:message
+		if (debug) {System.out.println("TX: "+pmPrefix+"-"+username+arrayOfUsersToString(recipients)+message);}
 		return pmPrefix+"-"+username+arrayOfUsersToString(recipients)+message;
 	}
 }
