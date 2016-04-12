@@ -27,6 +27,11 @@ public class ServerProtocol extends SharedProtocol {
 		//TODO: have this forward messages to every client, use the sendMessage() in Server, see handlePm for example
 		//return a heartbeat
 		parent.getMessager().println(message);
+		for (Entry<Integer, Server> entry : parent.getParent().getServerList().entrySet()) {
+			if (entry.getValue().hashCode() != parent.hashCode()) {//as long as it isn't our parent
+					entry.getValue().forwardMessage(message.substring(message.indexOf(':')), getUsername(message));
+			}
+		}
 		return heartbeat();
 	}
 	@Override
