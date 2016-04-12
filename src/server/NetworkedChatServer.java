@@ -186,7 +186,7 @@ public class NetworkedChatServer {
 		btnCloseConnection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int index = Integer.parseInt(txtConnection.getText());
-				if (index <= 0 || index >= server.serverListSize()) {//needs to be valid index
+				if (index < 0 || index >= server.serverListSize()) {//needs to be valid index
 					updateStatus(("COMMAND EXECUTION ERROR: Invalid connection index. Please specify a valid connection.\n"));
 				} else {
 					server.closeServer(index);

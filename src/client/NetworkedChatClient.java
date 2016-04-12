@@ -35,8 +35,6 @@ public class NetworkedChatClient {
 	private JScrollPane scrlpnMessages;
 	private static Client client;
 	JList<String> clientList;
-	
-	String message;
 
 	/**
 	 * Launch the application.
@@ -166,18 +164,12 @@ public class NetworkedChatClient {
 		txtUserInput.setText("Type your message here.");
 		messageEntry_splitPane.setLeftComponent(txtUserInput);
 		txtUserInput.setColumns(10);
-		txtUserInput.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				message = txtUserInput.getText();
-				txtUserInput.setText("");
-			}
-		});
 		
 		JButton btnSend = new JButton("Send");
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: send message to the server
-				//proto.respondString(text);
+				client.sendMessage(txtUserInput.getText().trim());
 			}
 		});
 		messageEntry_splitPane.setRightComponent(btnSend);
@@ -197,7 +189,7 @@ public class NetworkedChatClient {
 	//array of clients if multiple or single clients in client list selected
 	//null if no clients selected, to send to everybody
 	public String[] getClientsToMessage() {
-		return (String[]) clientList.getSelectedValuesList().toArray();
+		return clientList.getSelectedValuesList().toArray(new String[clientList.getSelectedValuesList().size()]);
 	}
 
 }

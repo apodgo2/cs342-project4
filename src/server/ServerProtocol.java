@@ -26,12 +26,14 @@ public class ServerProtocol extends SharedProtocol {
 	public String handleMessage(String message) {
 		//TODO: have this forward messages to every client, use the sendMessage() in Server, see handlePm for example
 		//return a heartbeat
+		parent.getMessager().println(message);
 		return heartbeat();
 	}
 	@Override
 	public String handleGoodbye(String message) {
-		//TODO: client disconnected, get username from message, tell ServerManager to close that connection if not already closed.
+		//TODO: client disconnected, get username from message, tell ServerManager to close that connection if not already closed. See handleHello()
 		//return null so that the Server breaks off the connection
+		parent.getMessager().println("Goodbye!");
 		return null;
 	}
 	@Override
@@ -39,6 +41,7 @@ public class ServerProtocol extends SharedProtocol {
 		//this updates a variable in server showing last time the server received a heartbeat (use lastReply)
 		//return a heartbeat
 		parent.updateLastReply();
+		parent.getMessager().println("heartbeat!");
 		return heartbeat();
 	}
 	@Override
@@ -69,10 +72,12 @@ public class ServerProtocol extends SharedProtocol {
 	//TX FORMATS
 	@Override
 	public String heartbeat() {
+		if (debug) {System.out.println("TX: "+"heartbeat");}
 		return heartbeatPrefix+":Heartbeat!";
 	}
 	@Override
 	public String goodbye() {
+		if (debug) {System.out.println("TX: "+"goodbye");}
 		return goodbyePrefix+":Goodbye!";
 	}
 	@Override

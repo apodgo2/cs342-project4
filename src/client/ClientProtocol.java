@@ -30,10 +30,22 @@ public class ClientProtocol extends SharedProtocol {
 		parent.getParent().updateClientList(getClients(message));
 		return null;
 	}
-	public void handleHeartbeat() {
+	@Override
+	public String handleHeartbeat(String message) {
 		//don't do anything, we don't really care about heartbeats as a client
 		//what would be cool, is if we tracked the server's ping, or had a lil indicator on the GUI showing that the server is connected if lastheartbeat<10s ago
-		return;
+		return null;
+	}
+	@Override
+	public String handleGoodbye(String message) {
+		parent.getParent().updateStatus("Server disconnected.");
+		parent.disconnect();
+		return null;
+	}
+	@Override
+	public String handleMessage(String message) {
+		parent.getParent().updateStatus(getUsername(message)+": "+message.substring(message.indexOf(':')));
+		return null;
 	}
 	//TX FORMATS
 	@Override

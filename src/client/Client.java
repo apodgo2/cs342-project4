@@ -64,9 +64,10 @@ public class Client implements Runnable {
 		}
 	}
 
-	private void sendMessage(String textMessage) {
+	public void sendMessage(String textMessage) {
 		count++;
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+		cal = Calendar.getInstance();
 		if (parent.getClientsToMessage().length == 0) {//send to everybody
 			this.send(os, (String) proto.message("["+dateFormat.format(cal.getTime())+"] "+textMessage, username));
 			parent.updateStatus(username+": "+"["+dateFormat.format(cal.getTime())+"] "+textMessage+"\n");

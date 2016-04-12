@@ -43,7 +43,12 @@ public class Server implements Runnable {
 			is = new BufferedInputStream(clientSocket.getInputStream());
 			os = new BufferedOutputStream(clientSocket.getOutputStream());
 		} catch (IOException e) {
-			m.println("IOException", false);
+			m.println("IOException, client disconnect?", false);
+			try {
+				this.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		}
 		m.println("successfully created to handle connection to "+clientSocket.getInetAddress().getHostAddress()+".", false);
@@ -123,6 +128,7 @@ public class Server implements Runnable {
 	public void close() throws IOException {
 		if (isRunning) {
 			isRunning = false;
+			forwardGoodbye();
 			clisock.close();
 			//Close all connections.
 			synchronized(this){
@@ -151,6 +157,14 @@ public class Server implements Runnable {
 			e.printStackTrace();
 		}
 	}
+	public void forwardGoodbye() {
+		try {
+			this.send(os, proto.goodbye());
+		} catch (IOException e) {
+			ServerManager.getParent().updateStatus("ERROR: Unable to send goodbye to client!");
+			e.printStackTrace();
+		}
+	}
 
 	public int getID() {
 		return myID;
@@ -168,6 +182,10 @@ public class Server implements Runnable {
 	
 	public ServerManager getParent() {
 		return parent;
+	}
+	//use the messager for printing to the console on server, so the connection will be prefixed correctly.
+	public Messager getMessager() {
+		return m;
 	}
 
 	public void setUsername(String username) {

@@ -71,7 +71,7 @@ public class ServerManager implements Runnable {
 	public void connectionClosed(Server itself) {
 		//TODO: make this more efficient, removing entry by value
 		for (Entry<Integer, Server> x : serverList.entrySet()) {
-			if (x.getValue() == itself) {serverList.remove(x.getKey());}
+			if (x.getValue().hashCode() == itself.hashCode()) {serverList.remove(x.getKey());}
 		}
 		connections--;
 		m.println("Got a connection closed message. Number of connections is now: "+connections, true);
@@ -84,6 +84,7 @@ public class ServerManager implements Runnable {
 			if (!serverList.isEmpty()) {
 				for (Entry<Integer, Server> x : serverList.entrySet()) {
 					try {
+						x.getValue().forwardGoodbye();
 						x.getValue().close();
 					} catch (IOException e) {
 						m.println("IOException shutting down servers.");
